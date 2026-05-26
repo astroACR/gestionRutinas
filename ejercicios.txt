@@ -1,0 +1,22 @@
+001;Trote en Cinta;Cardio;AVANZADO;20;Trote suave de resistencia aeróbica;2;11,0
+002;Ciclismo Estático;Cardio;BASICO;30;Pedaleo constante para capacidad cardiovascular;4;5,5
+003;Salto con Cuerda;Cardio;ALTO_RENDIMIENTO;20;Trabajo de coordinación y potencia elástica;0;11,7
+004;Elíptica;Cardio;ALTO_RENDIMIENTO;30;Entrenamiento cardiovascular de bajo impacto;1;10,9
+005;Remo de Salón;Cardio;ALTO_RENDIMIENTO;20;Cardio de alta demanda metabólica de cuerpo completo;1;11,3
+006;Burpees;Cardio;AVANZADO;20;Ejercicio calisténico cardiovascular de alta intensidad;0;7,4
+007;Sprints en Colina;Cardio;INTERMEDIO;20;Intervalos de velocidad para potencia anaeróbica;3;6,4
+008;Saltos del Payaso;Cardio;BASICO;20;Activación cardiovascular y coordinación general;2;11,5
+009;Escaladoras;Cardio;AVANZADO;30;Trabajo metabólico enfocado en el core;1;9,0
+010;Natación Estática;Cardio;AVANZADO;30;Resistencia cardiovascular en nado contracorriente;2;3,7
+011;Sentadilla Libre;Fuerza;AVANZADO;30;Movimiento compuesto para fuerza de tren inferior;4;3;10;38,7
+012;Press de Banca;Fuerza;INTERMEDIO;30;Empuje horizontal para desarrollo de pectoral y tríceps;3;3;15;118,6
+013;Peso Muerto;Fuerza;AVANZADO;75;Bisagra de cadera para fuerza de cadena posterior;3;5;15;112,6
+014;Overhead Press;Fuerza;INTERMEDIO;75;Empuje vertical para fuerza de hombros y estabilidad;2;3;10;18,2
+015;Dominadas Lastradas;Fuerza;ALTO_RENDIMIENTO;60;Tracción vertical para desarrollo de dorsal ancho;3;5;12;38,0
+016;Fondos en Paralelas;Fuerza;BASICO;30;Empuje en paralelas enfocado en pecho y tríceps;5;5;10;55,7
+017;Remo con Barra;Fuerza;ALTO_RENDIMIENTO;30;Tracción horizontal para densidad de la espalda;3;4;10;68,9
+018;Zancadas con Mancuernas;Fuerza;AVANZADO;75;Trabajo unilateral para fuerza y estabilidad de piernas;3;5;10;72,5
+019;Copas de Tríceps;Fuerza;BASICO;30;Extensión aislada para hipertrofia de tríceps;5;4;15;45,4
+020;Curl de Bíceps;Fuerza;ALTO_RENDIMIENTO;60;Flexión aislada con barra para hipertrofia de brazos;1;4;10;43,3
+021;Elevacion Lateral;Fuerza;BASICO;15;Sostener dos mancuernas del mismo peso, con los brazos estirados completamente, bajar lentamente y volver a subir.;5;4;8;10,0
+022;test;Fuerza;BASICO;10;test;5;1;1;1,0
