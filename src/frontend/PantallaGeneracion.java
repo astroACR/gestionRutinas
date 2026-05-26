@@ -120,7 +120,7 @@ public class PantallaGeneracion extends JPanel implements Observador {
     @Override
     public void actualizar(String evento) {
         if (evento.equals("RUTINA_GENERADA")) {
-            JOptionPane.showMessageDialog(this, "¡Rutina mixta generada exitosamente!");
+            JOptionPane.showMessageDialog(this, "Rutina generada correctamente");
             navegador.cambiarPantalla("REVISION");
         }
     }

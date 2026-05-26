@@ -129,7 +129,7 @@ public class PantallaCarga extends JPanel implements Observador {
             btnSiguiente.setEnabled(true);
             btnBuscar.setEnabled(false);
 
-            JOptionPane.showMessageDialog(this, "¡Mapeo y procesamiento de datos completado para la entrega!", "Carga Exitosa", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ejercicios cargados correctamente", "Carga Exitosa", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

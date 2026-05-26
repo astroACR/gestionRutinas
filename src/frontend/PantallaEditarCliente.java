@@ -30,7 +30,7 @@ public class PantallaEditarCliente extends JPanel implements Observador {
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel lblTitulo = new JLabel("Administración de la Base de Datos de Ejercicios", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("Administración BD Ejercicios", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         add(lblTitulo, BorderLayout.NORTH);
 
