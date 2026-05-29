@@ -22,7 +22,7 @@ public class PantallaMenuPrincipal extends JPanel {
 
         JPanel pnlBotones = new JPanel(new GridLayout(4, 1, 0, 15));
         
-        JButton btnCargar = new JButton("1. Cargar Base de Datos (.txt)");
+        JButton btnCargar = new JButton("1. Cargar Base de Datos");
         JButton btnEditar = new JButton("2. Administrar Ejercicios (Editar/Añadir/Eliminar)");
         JButton btnGenerar = new JButton("3. Generar Rutina Personalizada");
         JButton btnRevisar = new JButton("4. Revisar Rutina Actual");

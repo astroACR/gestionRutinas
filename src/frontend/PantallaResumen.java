@@ -3,7 +3,6 @@ package frontend;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.IOException;
 import backend.AdminEjercicios;
 import backend.Ejercicio;
 import backend.EjercicioCardio;
@@ -104,25 +103,28 @@ public class PantallaResumen extends JPanel implements Observador {
             }
         });
 
+        // COMPATIBILIZADO: Se eliminó el bloque IOException y se añadió control de errores relacionales
         btnConfirmar.addActionListener(e -> {
             try {
+                // Modifica en memoria la última semana utilizada para cada objeto del vector
                 for (Ejercicio ej : admin.getRutinaActual()) {
                     ej.setUltimaSemanaUsado(admin.getSemanaActualRutina());
                 }
                 
+                // Envía el vector actualizado al motor JDBC de MySQL de forma transaccional
                 admin.commitCambios();
                 
                 JOptionPane.showMessageDialog(this, 
-                    "¡Rutina almacenada con éxito!\nLos historiales de uso se han actualizado en la base de datos.", 
+                    "¡Rutina almacenada con éxito!\nLos historiales de uso se han actualizado directamente en MySQL.", 
                     "Sincronización Exitosa", JOptionPane.INFORMATION_MESSAGE);
                 
                 admin.notificar("PREPARAR_REVISION");
                 navegador.cambiarPantalla("MENU_PRINCIPAL");
                 
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, 
-                    "Error crítico al escribir en el archivo de texto: " + ex.getMessage(), 
-                    "Error de Persistencia", JOptionPane.ERROR_MESSAGE);
+                    "Error crítico al guardar los cambios en la Base de Datos: " + ex.getMessage(), 
+                    "Error de Persistencia BD", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -137,6 +139,7 @@ public class PantallaResumen extends JPanel implements Observador {
                 tiempoAcumulado += ej.getTiempoEstimado();
                 String detallesEspeciales = "";
                 
+                // Mapeo polimórfico dinámico para las filas del JTable
                 if (ej instanceof EjercicioCardio) {
                     EjercicioCardio c = (EjercicioCardio) ej;
                     detallesEspeciales = "Distancia: " + c.getDistancia() + " Km";

@@ -2,6 +2,8 @@ package backend;
 
 import java.io.IOException;
 import java.util.Vector;
+import backend.Conexion;
+import java.sql.*;
 
 public class AdminEjercicios {
         
@@ -11,17 +13,53 @@ public class AdminEjercicios {
     private int semanaActualRutina;
     
     private String rutaArchivoActual;
-
-    private LectorArchivo lector;
     
     public AdminEjercicios() {
         this.poolEjercicios = new Vector<>();
         this.rutinaActual = new Vector<>();
         this.observadores = new Vector<>();
         this.semanaActualRutina = -1;
-        this.lector = new LectorArchivo();
+
     }
     
+
+    public void cargarDatosDesdeBD() {
+        poolEjercicios.clear();
+        String query = "SELECT * FROM ejercicios";
+
+        try (Connection con = DriverManager.getConnection(Conexion.url, Conexion.user, Conexion.password);
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String nombre = rs.getString("nombre");
+                String tipo = rs.getString("tipo");
+                Intensidad intensidad = Intensidad.valueOf(rs.getString("intensidad"));
+                int tiempo = rs.getString("tiempo_estimado") != null ? rs.getInt("tiempo_estimado") : 0;
+                int ultimaSemana = rs.getInt("ultima_semana_usado");
+                String desc = rs.getString("descripcion");
+
+                Ejercicio ej;
+                if (tipo.equalsIgnoreCase("Cardio")) {
+                    double distancia = rs.getDouble("distancia");
+                    ej = new EjercicioCardio(id, nombre, "Cardio", intensidad, tiempo, desc, distancia);
+                } else {
+                    int series = rs.getInt("series");
+                    int reps = rs.getInt("repeticiones");
+                    double peso = rs.getDouble("peso");
+                    ej = new EjercicioFuerza(id, nombre, "Fuerza", intensidad, tiempo, desc, series, reps, peso);
+                }
+                
+                ej.setUltimaSemanaUsado(ultimaSemana);
+                poolEjercicios.add(ej);
+            }
+            notificar("CARGA_EXITOSA");
+
+        } catch (SQLException e) {
+            System.err.println("Error al cargar desde MySQL: " + e.getMessage());
+        }
+    }
 
     public void agregarEjercicioARutina(String tipo, Intensidad intensidad, int cantidad) throws IllegalStateException {
         int agregados = 0;
@@ -55,22 +93,49 @@ public class AdminEjercicios {
     }
 
 
-    public void cargarPoolDesdeArchivo(String ruta) throws Exception {
-        this.poolEjercicios.clear();
-        
-        this.rutaArchivoActual = ruta;
-        
- 
-        Vector<Ejercicio> ejerciciosCargados = this.lector.cargarEjercicios(ruta);
-        this.poolEjercicios.addAll(ejerciciosCargados);
-       
-        this.notificar("POOL_MODIFICADO");
-    }
-    
+    public void commitCambios() {
+        String deleteQuery = "DELETE FROM ejercicios";
+        String insertQuery = "INSERT INTO ejercicios (id, nombre, tipo, intensidad, tiempo_estimado, ultima_semana_usado, descripcion, distancia, series, repeticiones, peso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public void commitCambios() throws IOException {
-        if (this.rutaArchivoActual != null && !this.rutaArchivoActual.isEmpty()) {
-            this.lector.guardarCambios(this.rutaArchivoActual, this.poolEjercicios);
+        try (Connection con = DriverManager.getConnection(Conexion.url, Conexion.user, Conexion.password)) {
+            con.setAutoCommit(false); 
+
+
+            try (Statement deleteStmt = con.createStatement()) {
+                deleteStmt.executeUpdate(deleteQuery);
+            }
+
+            try (PreparedStatement pstmt = con.prepareStatement(insertQuery)) {
+                for (Ejercicio ej : poolEjercicios) {
+                    pstmt.setString(1, ej.getId());
+                    pstmt.setString(2, ej.getNombre());
+                    pstmt.setString(3, ej.getTipo());
+                    pstmt.setString(4, ej.getIntensidad().name());
+                    pstmt.setInt(5, ej.getTiempoEstimado());
+                    pstmt.setInt(6, ej.getUltimaSemanaUsado());
+                    pstmt.setString(7, ej.getDescripcion());
+
+                    if (ej instanceof EjercicioCardio) {
+                        pstmt.setDouble(8, ((EjercicioCardio) ej).getDistancia());
+                        pstmt.setNull(9, Types.INTEGER);
+                        pstmt.setNull(10, Types.INTEGER);
+                        pstmt.setNull(11, Types.DOUBLE);
+                    } else if (ej instanceof EjercicioFuerza) {
+                        pstmt.setNull(8, Types.DOUBLE);
+                        pstmt.setInt(9, ((EjercicioFuerza) ej).getSeries());
+                        pstmt.setInt(10, ((EjercicioFuerza) ej).getReps());
+                        pstmt.setDouble(11, ((EjercicioFuerza) ej).getPeso());
+                    }
+                    pstmt.addBatch(); 
+                }
+                pstmt.executeBatch();
+            }
+
+            con.commit(); 
+            System.out.println("Sincronización exitosa con MySQL.");
+
+        } catch (SQLException e) {
+            System.err.println("Error al guardar en MySQL: " + e.getMessage());
         }
     }
 

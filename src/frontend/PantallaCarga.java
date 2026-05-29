@@ -2,11 +2,10 @@ package frontend;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import backend.AdminEjercicios;
 import backend.Observador;
 import backend.Ejercicio;
-import java.io.IOException;
+
 
 
 public class PantallaCarga extends JPanel implements Observador {
@@ -37,7 +36,7 @@ public class PantallaCarga extends JPanel implements Observador {
 
         
         JPanel pnlEstadisticas = new JPanel(new GridLayout(5, 1, 10, 10));
-        pnlEstadisticas.setBorder(BorderFactory.createTitledBorder("Estadísticas del Archivo"));
+        pnlEstadisticas.setBorder(BorderFactory.createTitledBorder("Estadísticas de la BD"));
 
         lblTotal = new JLabel("Total Ejercicios: 0");
         lblCardio = new JLabel("Ejercicios de Cardio: 0");
@@ -60,7 +59,7 @@ public class PantallaCarga extends JPanel implements Observador {
         add(pnlEstadisticas, BorderLayout.CENTER);
 
         JPanel pnlBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        btnBuscar = new JButton("Buscar Archivo .txt");
+        btnBuscar = new JButton("Cargar BD");
         btnSiguiente = new JButton("Siguiente ->");
         btnSiguiente.setEnabled(false);
 
@@ -69,25 +68,16 @@ public class PantallaCarga extends JPanel implements Observador {
         add(pnlBotones, BorderLayout.SOUTH);
 
         btnBuscar.addActionListener(e -> {
-            JFileChooser selector = new JFileChooser();
-            int resultado = selector.showOpenDialog(this);
-            
-            if (resultado == JFileChooser.APPROVE_OPTION) {
-                String ruta = selector.getSelectedFile().getAbsolutePath();
-                try {
-                    admin.cargarPoolDesdeArchivo(ruta);
-                    admin.notificar("CARGA_EXITOSA");
-                } catch (FileNotFoundException ex) {
-                    JOptionPane.showMessageDialog(this, "Archivo no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de formato", JOptionPane.WARNING_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error al modificar", JOptionPane.WARNING_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage(), "Error Desconocido", JOptionPane.ERROR_MESSAGE);
-                }
+            try {
+                admin.cargarDatosDesdeBD();
+                admin.notificar("CARGA_EXITOSA");
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de formato", JOptionPane.WARNING_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage(), "Error Desconocido", JOptionPane.ERROR_MESSAGE);
             }
         });
+
 
         btnSiguiente.addActionListener(e -> {
             navegador.cambiarPantalla("MENU_PRINCIPAL");

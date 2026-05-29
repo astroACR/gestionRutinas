@@ -9,7 +9,6 @@ import backend.EjercicioFuerza;
 import backend.Intensidad;
 import backend.Observador;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 public class PantallaEditarCliente extends JPanel implements Observador {
 
@@ -30,7 +29,7 @@ public class PantallaEditarCliente extends JPanel implements Observador {
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel lblTitulo = new JLabel("Administración BD Ejercicios", SwingConstants.CENTER);
+        JLabel lblTitulo = new JLabel("Administración BD Ejercicios (MySQL)", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         add(lblTitulo, BorderLayout.NORTH);
 
@@ -103,9 +102,9 @@ public class PantallaEditarCliente extends JPanel implements Observador {
                 if (confirmado == JOptionPane.YES_OPTION) {
                     try {
                         admin.eliminarEjercicio(seleccionado);
-                        admin.commitCambios();
-                    } catch (IOException er) {
-                        JOptionPane.showMessageDialog(this, "Error al modificar " + er.getMessage(), "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                        admin.commitCambios(); // Sincroniza el vector con MySQL
+                    } catch (Exception er) {
+                        JOptionPane.showMessageDialog(this, "Error en la Base de Datos al eliminar: " + er.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else {
@@ -152,7 +151,7 @@ public class PantallaEditarCliente extends JPanel implements Observador {
                         }
                     }
                 } catch (NumberFormatException e) {
-          
+                    // Ignora IDs que no tengan formato numérico parseable
                 }
             }
         }
@@ -251,20 +250,17 @@ public class PantallaEditarCliente extends JPanel implements Observador {
                         nuevoEj = new EjercicioFuerza(idAuto, nombre, "Fuerza", intensidad, tiempoEstimado, desc, series, reps, peso);
                     }
                     nuevoEj.setUltimaSemanaUsado(ultimaSemana);
-                    admin.agregarEjercicio(nuevoEj);
+                    admin.agregarEjercicio(nuevoEj); 
                 }
                 
-                guardarCambiosEnTxt();
+                admin.commitCambios(); 
                 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error en los datos ingresados: " + ex.getMessage(), "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error en la operación o Base de Datos: " + ex.getMessage(), "Error Operacional", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void guardarCambiosEnTxt() throws IOException {
-        admin.commitCambios();
-    }
 
     @Override
     public void actualizar(String evento) {
